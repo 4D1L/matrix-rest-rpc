@@ -61,6 +61,12 @@
 			<type>pom</type>
 		</dependency>
 
+		<dependency>
+			<groupId>com.example.grpc.shared</groupId>
+			<artifactId>grpc-shared</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
