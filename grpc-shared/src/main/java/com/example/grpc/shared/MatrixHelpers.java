@@ -32,12 +32,12 @@ public class MatrixHelpers
     /**
      * Helper function from https://stackoverflow.com/a/22428926 to reverse deepToString
      */
-    private static String[][] stringToDeepArray(String arrayString) {
+    private static int[][] stringToDeepArray(String arrayString) {
         int row = 0;
         int col = 0;
 
         for(int i = 0; i < arrayString.length(); i++) {
-            if(str.charAt(i) == '[') {
+            if(arrayString.charAt(i) == '[') {
                 row += 1;
             }
         }
@@ -55,7 +55,7 @@ public class MatrixHelpers
 
         col += 1;
 
-        int[][] parsedMatrix = new int[row][column];
+        int[][] parsedMatrix = new int[row][col];
 
         arrayString = arrayString.replaceAll("\\[", "").replaceAll("\\]", "");
 
@@ -69,5 +69,7 @@ public class MatrixHelpers
 
             parsedMatrix[j][i % col] = Integer.parseInt(tokens[i]);
         }
+
+        return parsedMatrix;
     }
 }
