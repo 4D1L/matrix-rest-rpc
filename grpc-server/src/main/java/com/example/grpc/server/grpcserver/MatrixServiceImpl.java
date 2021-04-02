@@ -10,6 +10,8 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase {
 
     @Override
     public void addBlock(MatrixRequest request, StreamObserver<MatrixResponse> responseObserver) {
+        System.out.println("New request!");
+        
         // Transform blocks from strings back to array of integers
         int[][] matrixOne = MatrixHelpers.deserializeMatrix(request.getMatrixOne());
         int[][] matrixTwo = MatrixHelpers.deserializeMatrix(request.getMatrixTwo());
@@ -40,7 +42,7 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase {
         final int MAX = matrixOne.length;
         int[][] resultMatrix = new int[MAX][MAX];
         // Should be square...
-        
+
         final int bSize = MAX / 2;
 
         for(int i = 0; i < bSize; i++) {

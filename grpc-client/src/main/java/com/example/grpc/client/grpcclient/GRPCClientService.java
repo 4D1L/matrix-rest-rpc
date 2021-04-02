@@ -20,7 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
 public class GRPCClientService {
-    private List<String> servers = Arrays.asList("localhost", "107.23.132.46");
+    private List<String> servers = Arrays.asList("localhost", "107.23.132.46", "18.204.219.118", "3.92.68.93", "54.163.154.168", "34.228.254.171", "54.162.142.242", "34.230.6.65");
     private List<ChannelStubCouple> channels = new ArrayList<ChannelStubCouple>();
     private BlockingQueue<Integer> channelIDs = new LinkedBlockingQueue<>(servers.size());
 
