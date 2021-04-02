@@ -7,13 +7,16 @@ import com.example.grpc.shared.MatrixHelpers;
 
 @GrpcService
 public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase {
+
     @Override
     public void addBlock(MatrixRequest request, StreamObserver<MatrixResponse> responseObserver) {
+        // Transform blocks from strings back to array of integers
         int[][] matrixOne = MatrixHelpers.deserializeMatrix(request.getMatrixOne());
         int[][] matrixTwo = MatrixHelpers.deserializeMatrix(request.getMatrixTwo());
 
         final int MAX = matrixOne.length;
         int[][] resultMatrix = new int[MAX][MAX];
+        // Should be square...
 
         for(int i = 0; i < MAX; i++) {
             for(int j = 0; j < MAX; j++) {
@@ -21,6 +24,7 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase {
             }
         }
 
+        // Matrix transformed into string for response.
         String serializedMatrix = MatrixHelpers.serializeMatrix(resultMatrix);
         MatrixResponse response = MatrixResponse.newBuilder().setMatrix(serializedMatrix).build();
 
@@ -35,7 +39,8 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase {
 
         final int MAX = matrixOne.length;
         int[][] resultMatrix = new int[MAX][MAX];
-
+        // Should be square...
+        
         final int bSize = MAX / 2;
 
         for(int i = 0; i < bSize; i++) {
