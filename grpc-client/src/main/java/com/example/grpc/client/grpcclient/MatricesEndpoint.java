@@ -18,7 +18,6 @@ import com.example.grpc.shared.MatrixException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
 
 @RestController
 public class MatricesEndpoint {    
@@ -29,8 +28,8 @@ public class MatricesEndpoint {
         	this.grpcClientService = grpcClientService;
     	}    
 
-	@GetMapping("/test")
-    	public String testmatrice() {
+	@GetMapping("/test/multiply")
+    	public String testmatrices() {
 			int A[][] = { {1, 2, 3, 4}, 
 			{5, 6, 7, 8}, 
 			{9, 10, 11, 12},
@@ -53,20 +52,24 @@ public class MatricesEndpoint {
     	}
 
 	@PostMapping("/matrix/multiply")
-    	public String multiplyMatrices(@RequestParam("matrixOne") MultipartFile fileOne, @RequestParam("matrixTwo") MultipartFile fileTwo, @RequestParam("deadline") Long deadline) {
+    	public String multiplyMatrices(@RequestParam("matrixOne") MultipartFile fileOne, @RequestParam("matrixTwo") MultipartFile fileTwo, @RequestParam("deadline") float deadline) {
+            // Time for manual profiling
             long startTime = System.nanoTime();
-
             try {
+                // Parse files as strings then check if they're valid and then transform them into a multi-dimensional array of integers.
                 String matrixOneString = new String(fileOne.getBytes());
                 String matrixTwoString = new String(fileTwo.getBytes());
 
                 int[][] matrixOne = parseMatrixInput(matrixOneString);
                 int[][] matrixTwo = parseMatrixInput(matrixTwoString);
 
-                int[][] finalMatrix = this.grpcClientService.multiplyMatrices(matrixOne, matrixTwo, deadline);
+                // Work out deadline and then work out using rpc.
+                long longDeadline = (long) (deadline * 10_000_000_00L);
+                //System.out.println("======> deadline => " + deadline + " ======= " + "longDeadline L=> " + longDeadline);
+                int[][] finalMatrix = this.grpcClientService.multiplyMatrices(matrixOne, matrixTwo, longDeadline);
                 long endTime = System.nanoTime();
 
-                System.out.println("Total time => " + (endTime - startTime));
+                System.out.println("Total time taken => " + (endTime - startTime) + " deadline => " + longDeadline + " dimension => " + matrixOne.length);
                 return MatrixHelpers.serializeMatrix(finalMatrix);
             } catch(MatrixException | IOException | InterruptedException | ExecutionException ex) {
                 ex.printStackTrace();
@@ -81,6 +84,7 @@ public class MatricesEndpoint {
         String[] rows = input.trim().split("\n");
         String[] columns = rows[0].trim().split(" ");
 
+        // Various checks against dimension
         if(rows.length < 1 || columns.length < 1) {
             throw new MatrixException("Matrix Exception: Matrix does not have rows or perhaps columns.");
         }
@@ -98,8 +102,10 @@ public class MatricesEndpoint {
 
         try {
             for(int i = 0; i < rows.length; i++) {
+                // Tokenize horizontally
                 String[] rowTokens = rows[i].trim().split(" ");
 
+                // Check for a dodgy line
                 if(rowTokens.length != columns.length) {
                     throw new MatrixException("Matrix Exception: Matrix row length does not conform to original dimension.");
                 }
