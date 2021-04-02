@@ -21,7 +21,7 @@ mvn package
 **2. Compile & Run Client:**
 
 ```sh
-cd grpc-server
+cd grpc-client
 mvn package
 ./mvnw clean spring-boot:run
 ```
